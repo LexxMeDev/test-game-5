@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link rel="stylesheet" href="ad.css" />
+    <link rel="stylesheet" href="Template/loader.style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="displayheight" content="31, 60, 90, 125, 250, 400, 600" />
+    <style>
+      :root {
+        --tg-primary: #229ed9;
+        --tg-primary-2: #37b4f7;
+        --tg-text: #0f1c2e;
+        --tg-bg: #eaf2f9;
+        --app-height: 100vh;
+        --app-width: 100vw;
+      }
+
+      html,
+      body {
+        width: var(--app-width);
+        height: var(--app-height);
+        margin: 0;
+      }
+
+      body {
+        overflow: hidden;
+      }
+
+      #orientation-warning {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: radial-gradient(circle at 20% 20%, rgba(55, 180, 247, 0.18), transparent 42%),
+          radial-gradient(circle at 78% 30%, rgba(34, 158, 217, 0.18), transparent 35%), var(--tg-bg);
+        z-index: 9999;
+        font-family: "Inter", "SF Pro Display", "Segoe UI", sans-serif;
+      }
+
+      body.show-orientation-warning #orientation-warning {
+        display: flex;
+      }
+
+      .tg-card {
+        width: min(420px, 100%);
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.16);
+        border: 1px solid rgba(34, 158, 217, 0.18);
+      }
+
+      .tg-card__header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: linear-gradient(135deg, var(--tg-primary), var(--tg-primary-2));
+        color: #fff;
+        padding: 14px 18px;
+      }
+
+      .tg-card__badge {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+      }
+
+      .tg-card__title {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.1px;
+      }
+
+      .tg-card__subtitle {
+        font-size: 13px;
+        opacity: 0.86;
+        margin-top: 2px;
+      }
+
+      .tg-card__body {
+        padding: 18px 18px 10px;
+        color: var(--tg-text);
+        background: linear-gradient(180deg, rgba(34, 158, 217, 0.06), transparent 32%);
+        line-height: 1.5;
+        font-size: 15px;
+      }
+
+      .tg-card__body strong {
+        font-weight: 700;
+      }
+
+      .tg-card__actions {
+        padding: 0 18px 18px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .tg-card__button {
+        background: var(--tg-primary);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(34, 158, 217, 0.35);
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+      }
+
+      .tg-card__button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 9px 20px rgba(34, 158, 217, 0.45);
+      }
+
+      .tg-card__button:active {
+        transform: translateY(0);
+        box-shadow: 0 6px 16px rgba(34, 158, 217, 0.35);
+      }
+
+      body.show-orientation-warning #unity-container,
+      body.show-orientation-warning #loader {
+        filter: blur(2px);
+        pointer-events: none;
+        user-select: none;
+      }
+    </style>
+
+    <title>Runner</title>
+
+    <script src="Template/UnityProgress.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script> <script src="scripts/telegram-gifts-helpers.js"></script> <script>try{if(window.Telegram&&window.Telegram.WebApp){window.Telegram.WebApp.ready();window.Telegram.WebApp.expand();}}catch(e){console.log('TG init skip',e);}</script>
+
+    <script>
+      (function () {
+        const tg = window.Telegram?.WebApp;
+        const updateViewportVars = () => {
+          const hCandidates = [tg?.viewportHeight, tg?.viewportStableHeight, window.innerHeight].filter((v) => Number.isFinite(v));
+          const wCandidates = [tg?.viewportWidth, window.innerWidth].filter((v) => Number.isFinite(v));
+          const h = Math.max(320, ...hCandidates);
+          const w = Math.max(320, ...wCandidates);
+          document.documentElement.style.setProperty("--app-height", `${h}px`);
+          document.documentElement.style.setProperty("--app-width", `${w}px`);
+        };
+
+        try {
+          if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.onEvent?.("viewportChanged", updateViewportVars);
+          }
+        } catch (e) {
+          console.log("TG init skip", e);
+        }
+
+        updateViewportVars();
+        window.addEventListener("resize", updateViewportVars);
+        window.addEventListener("orientationchange", updateViewportVars);
+      })();
+    </script>
+
+    <script>
+      window.alert = console.log;
+      var unityInstance = null;
+    </script>
+
+    <script src="scripts/extensions.js"></script>
+    <script src="scripts/common.js"></script>
+  </head>
+  <body
+    style="
+      background-color: #E8F4FBFF;
+      overflow: hidden;
+      position: relative;
+      z-index: 90;
+    "
+  >
+    <div
+      id="unity-container"
+      style="
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0px;
+        top: 0px;
+        overflow: hidden;
+      "
+    >
+      <canvas
+        id="unity-canvas"
+        style="
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          left: 0px;
+          top: 0px;
+          overflow: hidden;
+          z-index: 1;
+        "
+      ></canvas>
+    </div>
+    <div id="loader">
+      <div id="loader-area">
+        <span id="loader-area__percent" style="color: #229ED9FF"></span>
+      </div>
+    </div>
+    <div id="orientation-warning" aria-live="polite">
+      <div class="tg-card">
+        <div class="tg-card__header">
+          <div class="tg-card__badge"></div>
+          <div>
+            <div class="tg-card__title" data-orientation-title>Поверните устройство</div>
+            <div class="tg-card__subtitle" data-orientation-subtitle>Игра работает только в альбомной ориентации</div>
+          </div>
+        </div>
+        <div class="tg-card__body">
+          <p data-orientation-instruction>
+            <strong>Чтобы продолжить</strong>, переведите телефон или планшет в горизонтальное положение.
+          </p>
+        </div>
+        <div class="tg-card__actions">
+          <button type="button" id="orientation-check" class="tg-card__button">Готово, я повернул(а)</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/Source.loader.js";
+      const config = {
+        dataUrl: buildUrl + "/Source.data.unityweb",
+        frameworkUrl: buildUrl + "/Source.framework.js.unityweb",
+        codeUrl: buildUrl + "/Source.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "SoParty Games",
+        productName: "Runner",
+        productVersion: "0.1",
+      };
+
+      const tg = window.Telegram?.WebApp;
+      const isMobileUA = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const container = document.querySelector("#unity-container");
+      const canvas = document.querySelector("#unity-canvas");
+      const orientationCheckButton = document.querySelector("#orientation-check");
+      const orientationTitle = document.querySelector("[data-orientation-title]");
+      const orientationSubtitle = document.querySelector("[data-orientation-subtitle]");
+      const orientationInstruction = document.querySelector("[data-orientation-instruction]");
+      const ORIENTATION_TARGET = "landscape"; // "landscape" | "portrait" | "any"
+      let unityInstanceStarted = false;
+
+
+
+      const isPortrait = () =>
+        window.matchMedia("(orientation: portrait)").matches || window.innerHeight > window.innerWidth;
+
+      const updateOrientationTexts = () => {
+        const copy = {
+          landscape: {
+            title: "Поверните устройство",
+            subtitle: "Игра работает только в альбомной ориентации",
+            instruction: "<strong>Чтобы продолжить</strong>, переведите устройство в горизонтальное положение.",
+          },
+          portrait: {
+            title: "Поверните устройство",
+            subtitle: "Игра работает только в портретной ориентации",
+            instruction: "<strong>Чтобы продолжить</strong>, переведите устройство в вертикальное положение.",
+          },
+        }[ORIENTATION_TARGET];
+
+        if (!copy) return;
+        if (orientationTitle) orientationTitle.textContent = copy.title;
+        if (orientationSubtitle) orientationSubtitle.textContent = copy.subtitle;
+        if (orientationInstruction) orientationInstruction.innerHTML = copy.instruction;
+      };
+
+      const shouldBlockByOrientation = () => {
+        if (ORIENTATION_TARGET === "any" || ORIENTATION_TARGET === "portrait") return false;
+        return isPortrait(); // default landscape
+      };
+
+      function toggleOrientationWarning() {
+        const needWarning = shouldBlockByOrientation();
+        document.body.classList.toggle("show-orientation-warning", needWarning);
+
+        if (!needWarning && ORIENTATION_TARGET === "landscape" && screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock("landscape").catch(() => {});
+        }
+      }
+
+      function startUnityIfReady() {
+        if (unityInstanceStarted || shouldBlockByOrientation()) {
+          return;
+        }
+
+        unityInstanceStarted = true;
+
+        UnityProgress(0);
+
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+          createUnityInstance(canvas, config, (progress) => UnityProgress(progress))
+            .then((uInstance) => (unityInstance = uInstance))
+            .catch((message) => console.log(message));
+        };
+        document.body.appendChild(script);
+      }
+
+      const handleOrientationUpdate = () => {
+        toggleOrientationWarning();
+        startUnityIfReady();
+      };
+
+      if (isMobileUA) {
+        IsMobilePlatform = true;
+        environment.deviceInfo.isMobile = true;
+
+        container.className = "unity-mobile";
+        config.devicePixelRatio = 1;
+      }
+
+      if (orientationCheckButton) {
+        orientationCheckButton.addEventListener("click", handleOrientationUpdate);
+      }
+      window.addEventListener("orientationchange", handleOrientationUpdate);
+      window.addEventListener("resize", handleOrientationUpdate);
+      updateOrientationTexts();
+      handleOrientationUpdate();
+
+      const allowAutoFullscreen = ORIENTATION_TARGET !== "portrait" || isMobileUA;
+      if (tg && allowAutoFullscreen) {
+        try {
+          tg.requestFullscreen?.();
+        } catch (e) {
+          console.log("TG fullscreen skip", e);
+        }
+      }
+    </script>
+    
+    
+    
+    
+  </body>
+</html>
