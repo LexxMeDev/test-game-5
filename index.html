@@ -253,7 +253,7 @@
       const orientationTitle = document.querySelector("[data-orientation-title]");
       const orientationSubtitle = document.querySelector("[data-orientation-subtitle]");
       const orientationInstruction = document.querySelector("[data-orientation-instruction]");
-      const ORIENTATION_TARGET = "landscape"; // "landscape" | "portrait" | "any"
+      const ORIENTATION_TARGET = "portrait"; // "landscape" | "portrait" | "any"
       let unityInstanceStarted = false;
 
 
@@ -282,16 +282,19 @@
       };
 
       const shouldBlockByOrientation = () => {
-        if (ORIENTATION_TARGET === "any" || ORIENTATION_TARGET === "portrait") return false;
-        return isPortrait(); // default landscape
+        if (ORIENTATION_TARGET === "any") return false;
+
+        const portrait = isPortrait();
+        if (ORIENTATION_TARGET === "portrait") return !portrait;
+        return portrait; // landscape
       };
 
       function toggleOrientationWarning() {
         const needWarning = shouldBlockByOrientation();
         document.body.classList.toggle("show-orientation-warning", needWarning);
 
-        if (!needWarning && ORIENTATION_TARGET === "landscape" && screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock("landscape").catch(() => {});
+        if (!needWarning && ORIENTATION_TARGET !== "any" && screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock(ORIENTATION_TARGET).catch(() => {});
         }
       }
 
